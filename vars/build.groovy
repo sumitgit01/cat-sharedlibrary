@@ -1,9 +1,11 @@
+def call() {
 pipeline {
     agent any
     stages{
         stage('Build'){
             steps{
-                echo "BuildingNodejs Application"
+                echo "Building Nodejs Application"
+                }
             }
         }
     }
