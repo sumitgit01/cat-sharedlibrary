@@ -47,12 +47,19 @@ def call(Map config = [:]) {
             }
             stage('Test') {
                 steps {
-                sh '''
-                    npm install --save-dev jest
-                    npm test -- --coverage
-                '''
+                    script {
+                    if (appType == 'node') {
+                        sh '''
+                        npm test -- --coverage
+                        '''
+                    } else if (appType == 'maven') {
+                        sh '''
+                        mvn test
+                        '''
+                    }
                 }
             }
+        }
             stage('SonarQube Analysis') {
                 steps {
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
