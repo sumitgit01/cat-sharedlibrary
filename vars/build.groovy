@@ -9,8 +9,8 @@ def call(Map config = [:]) {
         agent any
 
         tools {
-            nodejs 'nodejs'
-            maven 'maven'   // configure in Jenkins
+            nodejs 'node20'
+            maven 'maven3'   // configure in Jenkins
         }
 
         environment {
