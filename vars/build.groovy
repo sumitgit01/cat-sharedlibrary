@@ -1,7 +1,6 @@
 def call(Map config = [:]) {
 
     def appType        = config.get('appType', 'node')   // node | maven
-    def appDir         = config.get('appDir', '.')
     def sonarProjectKey= config.get('sonarProjectKey', 'default-key')
     def sonarSources   = config.get('sonarSources', 'src')
     
@@ -19,74 +18,73 @@ def call(Map config = [:]) {
 
         stages {
 
-            stage('Checkout') {
+            /* stage('Checkout') {
                 steps {
                     checkout scm
                 }
             }
-
-            stage('Build') {
+ */
+            stage('Build Provisioning') {
                 steps {
-                    dir(appDir) {
-
-                        script {
-                            if (appType == 'node') {
-                                sh '''
-                                npm install
-                                npm run build
-                                '''
-                            }
-
-                            else if (appType == 'maven') {
-                                sh '''
-                                mvn clean install -DskipTests
-                                '''
-                            }
-
-                            else {
-                                error "Unsupported appType: ${appType}"
-                            }
+                   script {
+                        if (appType == 'node') {
+                            sh '''
+                            npm install
+                            npm run build
+                            
+                            '''
+                        }
+                        else if (appType == 'maven') {
+                            sh '''
+                            mvn clean install -DskipTests
+                            '''
+                        }
+                        else {
+                            error "Unsupported appType: ${appType}"
                         }
                     }
                 }
             }
-
+            stage('Test') {
+                steps {
+                sh '''
+                    npm install --save-dev jest
+                    npm test -- --coverage
+                '''
+                }
+            }
             stage('SonarQube Analysis') {
                 steps {
-                    dir(appDir) {
+                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
 
-                        withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                            script {
+                                if (appType == 'node') {
+                                def scannerHome    = tool 'sonar-scanner'
+                                    sh """
+                                    ${scannerHome}/bin/sonar-scanner \
+                                    -Dsonar.projectKey=${sonarProjectKey} \
+                                    -Dsonar.sources=${sonarSources} \
+                                    -Dsonar.host.url=$SONAR_HOST_URL \
+                                    -Dsonar.login=$SONAR_TOKEN
+                                    """
+                                }
 
-                            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                                else if (appType == 'maven') {
 
-                                script {
-                                    if (appType == 'node') {
-                                    def scannerHome    = tool 'sonar-scanner'
-                                        sh """
-                                        ${scannerHome}/bin/sonar-scanner \
-                                        -Dsonar.projectKey=${sonarProjectKey} \
-                                        -Dsonar.sources=${sonarSources} \
-                                        -Dsonar.host.url=$SONAR_HOST_URL \
-                                        -Dsonar.login=$SONAR_TOKEN
-                                        """
-                                    }
-
-                                    else if (appType == 'maven') {
-
-                                        sh """
-                                        mvn sonar:sonar \
-                                        -Dsonar.projectKey=${sonarProjectKey} \
-                                        -Dsonar.host.url=$SONAR_HOST_URL \
-                                        -Dsonar.login=$SONAR_TOKEN
-                                        """
-                                    }
+                                    sh """
+                                    mvn sonar:sonar \
+                                    -Dsonar.projectKey=${sonarProjectKey} \
+                                    -Dsonar.host.url=$SONAR_HOST_URL \
+                                    -Dsonar.login=$SONAR_TOKEN
+                                    """
                                 }
                             }
                         }
                     }
+                    
                 }
             }
-
             stage('Quality Gate') {
                 steps {
                     timeout(time: 10, unit: 'MINUTES') {
@@ -94,6 +92,14 @@ def call(Map config = [:]) {
                     }
                 }
             }
+            stage('Upload to Nexus Artifactory'){
+                steps {
+                    sh '''
+                    echo "Upload failed"
+                    '''
+                }
+            }
         }
     }
 }
+
