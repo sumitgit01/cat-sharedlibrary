@@ -4,7 +4,7 @@ def call(Map config = [:]) {
     def appDir         = config.get('appDir', '.')
     def sonarProjectKey= config.get('sonarProjectKey', 'default-key')
     def sonarSources   = config.get('sonarSources', 'src')
-    def scannerHome    = tool 'sonar-scanner'
+    
     pipeline {
         agent any
 
@@ -61,7 +61,7 @@ def call(Map config = [:]) {
 
                                 script {
                                     if (appType == 'node') {
-
+                                    def scannerHome    = tool 'sonar-scanner'
                                         sh """
                                         ${scannerHome}/bin/sonar-scanner \
                                         -Dsonar.projectKey=${sonarProjectKey} \
