@@ -18,12 +18,12 @@ def call(Map config = [:]) {
 
         stages {
 
-            /* stage('Checkout') {
+              stage('Initialise') {
                 steps {
-                    checkout scm
+                    cleanWs()
                 }
             }
- */
+ 
             stage('Build Provisioning') {
                 steps {
                    script {
@@ -102,6 +102,7 @@ def call(Map config = [:]) {
             stage('Upload images to Nexus Artifactory'){
                 steps {
                     sh '''
+                    chmod +x build.sh
                     ./build.sh
                     '''
                 }
