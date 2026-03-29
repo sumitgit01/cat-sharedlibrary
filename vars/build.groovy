@@ -102,32 +102,28 @@ def call(Map config = [:]) {
             stage('Upload images to Nexus Artifactory') {
                 steps {
                     script {
-                        // Using withCredentials to securely handle login
                         withCredentials([usernamePassword(
                             credentialsId: 'nexus_cred',
                             usernameVariable: 'NEXUS_USER',
                             passwordVariable: 'NEXUS_PASS'
                         )]) {
                             sh '''
-                            # 1. Login using stdin to avoid password exposure in logs
+                            echo "--- DEBUG: Checking Docker Config as Jenkins User ---"
+                            docker info | grep -A 1 "Insecure Registries"
+                            
+                            # If the output above is BLANK, Jenkins is not using the daemon you configured.
+                            
                             echo "$NEXUS_PASS" | docker login 192.168.68.124:8082 -u "$NEXUS_USER" --password-stdin
                             
-                            # 2. Execute the build and push script
                             chmod +x build.sh
                             ./build.sh
 
-                            # 3. Logout and cleanup local images to save space on Jenkins agent
                             docker logout 192.168.68.124:8082
-                            
-                            # Optional: Cleanup local tags to keep the agent clean
-                            app_name=$(jq -r ".name" package.json)
-                            version=$(jq -r ".version" package.json)
-                            docker rmi "192.168.68.124:8082/$app_name:$version" || true
                             '''
                         }
                     }
                 }
-            }
+            }   
         }
     }
 }
