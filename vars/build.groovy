@@ -101,21 +101,30 @@ def call(Map config = [:]) {
             }
             stage('Upload images to Nexus Artifactory') {
                 steps {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'nexus_cred',
-                        usernameVariable: 'NEXUS_USER',
-                        passwordVariable: 'NEXUS_PASS'
-                    )]) {
-                        sh '''
-                        export DOCKER_OPTS="--insecure-registry 192.168.68.124:8082"
+                    script {
+                        // Using withCredentials to securely handle login
+                        withCredentials([usernamePassword(
+                            credentialsId: 'nexus_cred',
+                            usernameVariable: 'NEXUS_USER',
+                            passwordVariable: 'NEXUS_PASS'
+                        )]) {
+                            sh '''
+                            # 1. Login using stdin to avoid password exposure in logs
+                            echo "$NEXUS_PASS" | docker login 192.168.68.124:8082 -u "$NEXUS_USER" --password-stdin
+                            
+                            # 2. Execute the build and push script
+                            chmod +x build.sh
+                            ./build.sh
 
-                        echo "$NEXUS_PASS" | docker login 192.168.68.124:8082 -u "$NEXUS_USER" --password-stdin
-                        
-                        chmod +x build.sh
-                        ./build.sh
-
-                        docker logout 192.168.68.124:8082
-                        '''
+                            # 3. Logout and cleanup local images to save space on Jenkins agent
+                            docker logout 192.168.68.124:8082
+                            
+                            # Optional: Cleanup local tags to keep the agent clean
+                            app_name=$(jq -r ".name" package.json)
+                            version=$(jq -r ".version" package.json)
+                            docker rmi "192.168.68.124:8082/$app_name:$version" || true
+                            '''
+                        }
                     }
                 }
             }
