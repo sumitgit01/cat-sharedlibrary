@@ -99,14 +99,24 @@ def call(Map config = [:]) {
                     }
                 }
             }
-            stage('Upload images to Nexus Artifactory'){
-                steps {
-                    sh '''
-                    chmod +x build.sh
-                    ./build.sh
-                    '''
-                }
-            }
+            stage('Upload images to Nexus Artifactory') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'nexus_cred',
+            usernameVariable: 'NEXUS_USER',
+            passwordVariable: 'NEXUS_PASS'
+        )]) {
+            sh '''
+            echo "$NEXUS_PASS" | docker login 192.168.68.124:8070 -u "$NEXUS_USER" --password-stdin
+            
+            chmod +x build.sh
+            ./build.sh
+            
+            docker logout 192.168.68.124:8070
+            '''
+        }
+    }
+}
         }
     }
 }
