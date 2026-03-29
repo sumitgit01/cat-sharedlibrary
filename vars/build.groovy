@@ -17,12 +17,12 @@ def call(Map config = [:]) {
         }
 
         stages {
-
+/* 
               stage('Initialise') {
                 steps {
                     cleanWs()
                 }
-            }
+            } */
  
             stage('Build Provisioning') {
                 steps {
