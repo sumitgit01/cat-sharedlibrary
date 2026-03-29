@@ -107,7 +107,9 @@ def call(Map config = [:]) {
                         passwordVariable: 'NEXUS_PASS'
                     )]) {
                         sh '''
-                        docker login --tls-verify=false 192.168.68.124:8082 -u "$NEXUS_USER" -p "$NEXUS_PASS"
+                        export DOCKER_OPTS="--insecure-registry 192.168.68.124:8082"
+
+                        echo "$NEXUS_PASS" | docker login 192.168.68.124:8082 -u "$NEXUS_USER" --password-stdin
                         
                         chmod +x build.sh
                         ./build.sh
