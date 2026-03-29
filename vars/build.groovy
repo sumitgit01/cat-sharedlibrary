@@ -99,10 +99,10 @@ def call(Map config = [:]) {
                     }
                 }
             }
-            stage('Upload to Nexus Artifactory'){
+            stage('Upload images to Nexus Artifactory'){
                 steps {
                     sh '''
-                    echo "Upload failed"
+                    ./build.sh
                     '''
                 }
             }
