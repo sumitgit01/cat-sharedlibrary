@@ -107,12 +107,12 @@ def call(Map config = [:]) {
                         passwordVariable: 'NEXUS_PASS'
                     )]) {
                         sh '''
-                        echo "$NEXUS_PASS" | docker login 192.168.68.124:8070 -u "$NEXUS_USER" --password-stdin
+                        echo "$NEXUS_PASS" | docker login http://192.168.68.124:8070 -u "$NEXUS_USER" --password-stdin
 
                         chmod +x build.sh
                         ./build.sh
 
-                        docker logout 192.168.68.124:8070
+                        docker logout http://192.168.68.124:8070
                         '''
                     }
                 }
