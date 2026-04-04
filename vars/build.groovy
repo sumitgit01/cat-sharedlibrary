@@ -164,8 +164,9 @@
                                 echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz"
 
                                 curl -u "$NEXUS_USER:$NEXUS_PASS" \
-                                --upload-file ${CHART_NAME}-${CHART_VERSION}.tgz \
-                                http://${NEXUS_URL}/repository/${HELM_REPO_NAME}/
+                                -X POST "http://${NEXUS_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
+                                -F "helm.asset=@${CHART_NAME}-${CHART_VERSION}.tgz" \
+                                -F "helm.asset.filename=${CHART_NAME}-${CHART_VERSION}.tgz"
                                 '''
                             }
                         }
