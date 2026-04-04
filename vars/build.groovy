@@ -149,15 +149,15 @@
                             sh """
                             cd manifestbuild
                             helm version
-                            CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
-                            CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+                            CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $\2}')
+                            CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $\2}')
 
-                            echo "Chart Name: $CHART_NAME"
-                            echo "Chart Version: $CHART_VERSION"
+                            echo "Chart Name: $\CHART_NAME" 
+                            echo "Chart Version: $\CHART_VERSION"
 
                             helm package .
 
-                            curl -u "$NEXUS_USER:$NEXUS_PASS" \
+                            curl -u "$\NEXUS_USER:$\NEXUS_PASS" \
                             --upload-file ${CHART_NAME}-${CHART_VERSION}.tgz \
                             http://${NEXUS_URL}/repository/${HELM_REPO_NAME}/
                             """
