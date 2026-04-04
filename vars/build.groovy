@@ -7,7 +7,7 @@
         def nexusPort       = config.get('nexusPort', '8082')
         def repoName  = config.get('repoName', 'default-repo')
         def helmRepoName = config.get('helmRepoName')
-        def helmPort = congig.get('helmPort')
+        def helmPort = config.get('helmPort')
         pipeline {
             agent any
 
