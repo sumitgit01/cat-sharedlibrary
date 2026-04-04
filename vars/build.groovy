@@ -48,6 +48,8 @@
                             else if (appType == 'maven') {
                                 def version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
                                 sh '''
+                                    export JAVA_HOME=/opt/jdk-21.0.9
+                                    export PATH=$JAVA_HOME/bin
                                     mvn clean install -DskipTests
                                 '''
                                 env.APP_VERSION = version

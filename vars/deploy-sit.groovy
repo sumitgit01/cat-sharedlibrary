@@ -1,5 +1,7 @@
 pipeline{
-    agent any //sitserver details
+    agent {
+        label params.DEPLOY_SERVER   //with read from jenkins
+        } //sitserver details
     stages{
         stage('download Helm') {
             steps{
