@@ -151,8 +151,8 @@
                             helm package .
 
                             curl -u $NEXUS_USER:$NEXUS_PASS \
-                            --upload-file ${HELM_REPO}-${APP_VERSION}.tgz \
-                            http://${NEXUS_URL}/repository/${HELM_REPO}/
+                            --upload-file ${HELM_REPO_NAME}-${APP_VERSION}.tgz \
+                            http://${NEXUS_URL}/repository/${HELM_REPO_NAME}/
                             """
                         }
                     }
