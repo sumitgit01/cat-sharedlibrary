@@ -148,6 +148,7 @@
 
                             sh """
                             cd manifestbuild
+                            helm version
                             helm package .
 
                             curl -u $NEXUS_USER:$NEXUS_PASS \
