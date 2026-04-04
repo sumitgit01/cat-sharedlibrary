@@ -137,11 +137,10 @@
                                 echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz to Nexus"
 
                                 curl -u "$NEXUS_USER:$NEXUS_PASS" \
-                                -X POST "http://${NEXUS_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
+                                -X POST "http://${NEXUS_HELM_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
                                 -H "accept: application/json" \
                                 -H "Content-Type: multipart/form-data" \
-                                -F "helm.asset=@${CHART_NAME}-${CHART_VERSION}.tgz;type=application/gzip" \
-                                -F "helm.asset.filename=${CHART_NAME}-${CHART_VERSION}.tgz"
+                                -F "helm.asset=@manifestbuild-0.1.0.tgz"
                                 '''
                             }
                         }
