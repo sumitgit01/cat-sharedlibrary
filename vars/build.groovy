@@ -146,42 +146,6 @@
                         }
                     }
                 }
-
-                stage('Package & Upload Helm Chart') {
-                    steps {
-                        script {
-                            withCredentials([usernamePassword(
-                                credentialsId: 'nexus_cred',
-                                usernameVariable: 'NEXUS_USER',
-                                passwordVariable: 'NEXUS_PASS'
-                            )]) {
-
-                                sh '''
-                                export PATH=$PATH:/usr/local/bin
-
-                                cd manifestbuild
-
-                                helm version
-
-                                CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
-                                CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
-
-                                echo "Chart Name: $CHART_NAME"
-                                echo "Chart Version: $CHART_VERSION"
-
-                                helm package .
-
-                                echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz"
-
-                                curl -u "$NEXUS_USER:$NEXUS_PASS" \
-                                -X POST "http://${NEXUS_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
-                                -F "helm.asset=@${CHART_NAME}-${CHART_VERSION}.tgz" \
-                                -F "helm.asset.filename=${CHART_NAME}-${CHART_VERSION}.tgz"
-                                '''
-                            }
-                        }
-                    }
-                }
             }
         }
     }
