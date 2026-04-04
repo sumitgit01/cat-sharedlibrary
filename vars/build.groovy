@@ -131,7 +131,7 @@
 
                                 echo "Chart Name: $CHART_NAME"
                                 echo "Chart Version: $CHART_VERSION"
-
+                                echo "helmPort: $helmPort"
                                 helm package .
 
                                 echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz to Nexus"
