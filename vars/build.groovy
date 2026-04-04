@@ -149,11 +149,11 @@
                             sh """
                             cd manifestbuild
                             helm version
-                            CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $\2}')
-                            CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $\2}')
+                            CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print ${2}}')
+                            CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print ${2}}')
 
-                            echo "Chart Name: $\CHART_NAME" 
-                            echo "Chart Version: $\CHART_VERSION"
+                            echo "Chart Name: ${CHART_NAME}" 
+                            echo "Chart Version: ${CHART_VERSION}"
 
                             helm package .
 
