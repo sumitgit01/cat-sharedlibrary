@@ -20,6 +20,7 @@
                 SONARQUBE_SERVER = 'SonarQube'
                 NEXUS_IP   = "192.168.68.124"
                 NEXUS_URL  = "${NEXUS_IP}:${nexusPort}"
+                NEXUS_HELM_URL = "${NEXUS_IP}:${helmPort}"
                 REPO_NAME  = "${repoName}"
                 HELM_REPO_NAME = "${helmRepoName}"
                 // DEPLOY_TARGET = "192.168.68.126"
