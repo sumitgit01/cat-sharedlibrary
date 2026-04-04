@@ -111,7 +111,7 @@
                         }
                     }
                 }
-                stage('Upload images to Nexus Artifactory') {
+                stage('Package & Upload Helm Chart') {
                     steps {
                         script {
                             withCredentials([usernamePassword(
@@ -119,23 +119,33 @@
                                 usernameVariable: 'NEXUS_USER',
                                 passwordVariable: 'NEXUS_PASS'
                             )]) {
-                                sh '''
-                                echo "--- DEBUG: Checking Docker Config as Jenkins User ---"
-                                docker info | grep -A 1 "Insecure Registries"
-                                
-                                # If the output above is BLANK, Jenkins is not using the daemon you configured.
-                                
-                                echo "$NEXUS_PASS" | docker login ${NEXUS_URL} -u "$NEXUS_USER" --password-stdin
-                                
-                                chmod +x build.sh
-                                ./build.sh ${NEXUS_URL} ${REPO_NAME}
 
-                                docker logout ${NEXUS_URL}
+                                sh '''
+                                export PATH=$PATH:/usr/local/bin
+
+                                cd manifestbuild
+
+                                CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
+                                CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+
+                                echo "Chart Name: $CHART_NAME"
+                                echo "Chart Version: $CHART_VERSION"
+
+                                helm package .
+
+                                echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz to Nexus"
+
+                                curl -u "$NEXUS_USER:$NEXUS_PASS" \
+                                -X POST "http://${NEXUS_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
+                                -H "accept: application/json" \
+                                -H "Content-Type: multipart/form-data" \
+                                -F "helm.asset=@${CHART_NAME}-${CHART_VERSION}.tgz;type=application/gzip" \
+                                -F "helm.asset.filename=${CHART_NAME}-${CHART_VERSION}.tgz"
                                 '''
                             }
                         }
                     }
-                }   
+                }
 
                 stage('Package & Upload Helm Chart') {
                     steps {
