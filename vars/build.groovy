@@ -141,7 +141,7 @@
                                 helm package .
 
                                 echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz to Nexus"
-
+                                # http://192.168.68.124:8081/repository/cat-helm/
                                 curl -u "$NEXUS_USER:$NEXUS_PASS" \
                                 -X POST "http://${NEXUS_HELM_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
                                 -H "accept: application/json" \
