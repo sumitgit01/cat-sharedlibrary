@@ -85,7 +85,7 @@
                                     if (appType == 'node') {
                                     def scannerHome    = tool 'sonar-scanner'
                                         sh """
-                                        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.18.0.8-1.el9.x86_64
+                                        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
                                         export PATH=$JAVA_HOME/bin:$PATH
                                         echo $JAVA_HOME
                                         ${scannerHome}/bin/sonar-scanner \
