@@ -8,7 +8,7 @@ pipeline{
         stage('download Helm') {
             steps{
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'nexus_cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         echo "Deploy to k8s"
                         sh '''
                             helm repo add ${APP_NAME}-helm $NEXUS_URL \
