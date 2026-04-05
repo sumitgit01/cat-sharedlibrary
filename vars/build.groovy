@@ -14,7 +14,7 @@
             tools {
                 nodejs 'node20'
                 maven 'maven3'   // configure in Jenkins
-                jdk 'jdk21'
+                // jdk 'jdk21'
             }
 
             environment {
