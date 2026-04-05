@@ -57,7 +57,7 @@
                                     export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
                                     mvn clean install -DskipTests
                                 '''
-                                def version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                                def version = sh(script: "/opt/apache-maven-3.9.11/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
                                 env.APP_VERSION = version
                                 print("APP VERSION is "+APP_VERSION)
                             }
