@@ -79,7 +79,9 @@
                             '''
                         } else if (appType == 'maven') {
                             sh '''
+                                export JAVA_HOME=/opt/jdk-21.0.9
                                 echo "JAVA_HOME=$JAVA_HOME"
+                                export PATH=$JAVA_HOME/bin:$PATH
                                 which java
                                 java -version
                                 mvn -version
