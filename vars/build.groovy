@@ -128,26 +128,28 @@
                             )]) {
 
                                 sh '''
-                                export PATH=$PATH:/usr/local/bin
+                                    export PATH=$PATH:/usr/local/bin
 
-                                cd manifestbuild
+                                    cd manifestbuild
 
-                                CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
-                                CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+                                    CHART_NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
+                                    CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
 
-                                echo "Chart Name: $CHART_NAME"
-                                echo "Chart Version: $CHART_VERSION"
-                                echo "helmPort: $helmPort"
-                                helm package .
+                                    echo "Chart Name: $CHART_NAME"
+                                    echo "Chart Version: $CHART_VERSION"
 
-                                echo "Uploading ${CHART_NAME}-${CHART_VERSION}.tgz to Nexus"
-                                # http://192.168.68.124:8081/repository/cat-helm/
-                                curl -u "$NEXUS_USER:$NEXUS_PASS" \
-                                -X POST "http://${NEXUS_HELM_URL}/service/rest/v1/components?repository=${HELM_REPO_NAME}" \
-                                -H "accept: application/json" \
-                                -H "Content-Type: multipart/form-data" \
-                                -F "helm.asset=@manifestbuild-0.1.0.tgz"
-                                '''
+                                    helm package .
+
+                                    PACKAGE_NAME="${CHART_NAME}-${CHART_VERSION}.tgz"
+
+                                    echo "Uploading $PACKAGE_NAME to Nexus"
+
+                                    curl -u "$NEXUS_USER:$NEXUS_PASS" \
+                                    -X POST "http://${NEXUS_HELM_URL}/service/rest/v1/components?repository=cat-helm" \
+                                    -H "accept: application/json" \
+                                    -H "Content-Type: multipart/form-data" \
+                                    -F "helm.asset=@$PACKAGE_NAME"
+                                    '''
                             }
                         }
                     }
