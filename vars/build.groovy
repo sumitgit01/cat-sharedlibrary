@@ -51,8 +51,10 @@
                                     #export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
                                     #export PATH=$JAVA_HOME/bin:$PATH
                                     export JAVA_HOME=/opt/jdk-21.0.9
-                                    export PATH=$JAVA_HOME/bin
+                                    #export PATH=$JAVA_HOME/bin
                                     echo $JAVA_HOME
+                                    export M2_HOME=/opt/apache-maven-3.9.11
+                                    export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
                                     mvn clean install -DskipTests
                                 '''
                                 def version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
