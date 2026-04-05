@@ -79,8 +79,13 @@
                             '''
                         } else if (appType == 'maven') {
                             sh '''
-                            mvn test
-                            '''
+                                echo "JAVA_HOME=$JAVA_HOME"
+                                which java
+                                java -version
+                                mvn -version
+
+                                mvn test
+                                '''
                         }
                     }
                 }
