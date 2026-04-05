@@ -1,6 +1,6 @@
+def APP_NAME = params.APP_NAME
+def NEXUS_URL = "http://192.168.68.124:8081"
 pipeline{
-    def APP_NAME = params.APP_NAME
-    def NEXUS_URL = "http://192.168.68.124:8081"
     agent {
         label params.DEPLOY_SERVER   //with read from jenkins
         } //sitserver details
