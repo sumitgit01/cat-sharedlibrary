@@ -48,18 +48,21 @@
                             else if (appType == 'maven') {
                                 
                                 sh '''
-                                    #export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-                                    #export PATH=$JAVA_HOME/bin:$PATH
                                     export JAVA_HOME=/opt/jdk-21.0.9
-                                    #export PATH=$JAVA_HOME/bin
-                                    echo $JAVA_HOME
                                     export M2_HOME=/opt/apache-maven-3.9.11
                                     export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+                                    echo "JAVA_HOME=$JAVA_HOME"
+                                    java -version
+                                    mvn -version
+
                                     mvn clean install -DskipTests
-                                '''
-                                def version = sh(script: "/opt/apache-maven-3.9.11/bin/mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+
+                                    mvn help:evaluate -Dexpression=project.version -q -DforceStdout > version.txt
+                                    '''
+                                def version = readFile('version.txt').trim()
                                 env.APP_VERSION = version
-                                print("APP VERSION is "+APP_VERSION)
+                                echo "APP VERSION is ${env.APP_VERSION}"
                             }
                             else {
                                 error "Unsupported appType: ${appType}"
