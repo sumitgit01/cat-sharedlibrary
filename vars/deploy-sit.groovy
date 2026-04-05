@@ -1,4 +1,6 @@
 pipeline{
+    def APP_NAME = params.APP_NAME
+    def NEXUS_URL = "http://192.168.68.124:8081"
     agent {
         label params.DEPLOY_SERVER   //with read from jenkins
         } //sitserver details
@@ -6,7 +8,15 @@ pipeline{
         stage('download Helm') {
             steps{
                 script {
-                    echo "Deploy to k8s"
+                    withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                        echo "Deploy to k8s"
+                        sh '''
+                            helm repo add ${APP_NAME}-helm $NEXUS_URL \
+                            --username $USER --password $PASS
+                            ls -alrth
+                            helm repo update
+                        '''
+                    }
                 }
             }
         }
