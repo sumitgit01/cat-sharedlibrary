@@ -1,4 +1,4 @@
-def call(body) {
+//def call(body) {
     pipeline {
         agent {
             docker {
@@ -49,4 +49,4 @@ def call(body) {
             }
         }
     }
-}
+//}
