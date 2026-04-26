@@ -26,7 +26,7 @@ pipeline {
         stage('Trivy Scan & Report') {
             steps {
                 sh '''
-                trivy image --format table -o trivy-report.txt $FULL_IMAGE
+                    trivy image --format table -o trivy-report.txt $FULL_IMAGE
                 '''
             }
         }
