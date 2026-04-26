@@ -1,7 +1,8 @@
-def call() {
+def call(body) {
     pipeline {
         agent {
             docker {
+                label 'trivy-agent'
                 image 'summitjoshi/jenkins-trivy-agent:v1'
                 args '-v /var/run/docker.sock:/var/run/docker.sock'
             }
