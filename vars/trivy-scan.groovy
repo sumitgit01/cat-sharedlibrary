@@ -17,7 +17,7 @@ pipeline {
         stage('Pull Image') {
             steps {
                 sh '''
-                    print "Pulling image: $FULL_IMAGE"
+                    echo "Pulling image: $FULL_IMAGE"
                     docker pull $FULL_IMAGE
                 '''
             }
