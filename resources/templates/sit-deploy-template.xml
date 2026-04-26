@@ -1,0 +1,28 @@
+<flow-definition plugin="workflow-job@1571.vb_423c255d6d9">
+<description/>
+<keepDependencies>false</keepDependencies>
+<properties/>
+<definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@4263.vd2edf31c1db_0">
+<scm class="hudson.plugins.git.GitSCM" plugin="git@5.10.1">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>https://github.com/sumitgit01/cat-sharedlibrary.git</url>
+<credentialsId>sumit-git</credentialsId>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/main</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class="empty-list"/>
+<extensions/>
+</scm>
+<scriptPath>vars/deploy-sit.groovy</scriptPath>
+<lightweight>true</lightweight>
+</definition>
+<triggers/>
+<disabled>false</disabled>
+</flow-definition>

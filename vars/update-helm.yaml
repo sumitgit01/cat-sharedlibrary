@@ -1,0 +1,12 @@
+pipeline {
+    agent labels 'docker'
+    stages {
+        stage('Update Helm'){
+            steps {
+                script {
+                    sh 'helm repo update'
+                  }
+               }
+            }
+          }
+        }
