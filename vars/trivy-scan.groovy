@@ -17,7 +17,8 @@ def call(body) {
             stage('Pull Image') {
                 steps {
                     sh '''
-                    docker pull $FULL_IMAGE
+                        print "Pulling image: $FULL_IMAGE"
+                        docker pull $FULL_IMAGE
                     '''
                 }
             }
