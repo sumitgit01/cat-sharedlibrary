@@ -3,7 +3,7 @@ pipeline {
         //Docker Pipeline pugin must be installed in Jenkins for this to work
         docker {
             image 'summitjoshi/jenkins-trivy-agent:v1'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
