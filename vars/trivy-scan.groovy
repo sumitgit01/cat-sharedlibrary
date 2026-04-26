@@ -1,49 +1,51 @@
-pipeline {
-    agent {
-        docker {
-            image 'summitjoshi/jenkins-trivy-agent:v1'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
-    environment {
-        IMAGE_NAME = 'summitjoshi/cat-frontend'
-        IMAGE_TAG = '0.1.0'
-        FULL_IMAGE = "${IMAGE_NAME}:${IMAGE_TAG}"
-    }
-
-    stages {
-
-        stage('Pull Image') {
-            steps {
-                sh '''
-                docker pull $FULL_IMAGE
-                '''
+def call() {
+    pipeline {
+        agent {
+            docker {
+                image 'summitjoshi/jenkins-trivy-agent:v1'
+                args '-v /var/run/docker.sock:/var/run/docker.sock'
             }
         }
 
-        stage('Trivy Scan & Report') {
-            steps {
-                sh '''
-                trivy image --format table -o trivy-report.txt $FULL_IMAGE
-                '''
-            }
+        environment {
+            IMAGE_NAME = 'summitjoshi/cat-frontend'
+            IMAGE_TAG = '0.1.0'
+            FULL_IMAGE = "${IMAGE_NAME}:${IMAGE_TAG}"
         }
 
-        stage('Email Report') {
-            steps {
-                emailext (
-                    subject: "Trivy Scan Report - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: """
-Trivy scan completed.
+        stages {
 
-Image: ${env.FULL_IMAGE}
+            stage('Pull Image') {
+                steps {
+                    sh '''
+                    docker pull $FULL_IMAGE
+                    '''
+                }
+            }
 
-Check attached report.
-""",
-                    to: "sumitjoshi1988@gmail.com",
-                    attachmentsPattern: "trivy-report.txt"
-                )
+            stage('Trivy Scan & Report') {
+                steps {
+                    sh '''
+                    trivy image --format table -o trivy-report.txt $FULL_IMAGE
+                    '''
+                }
+            }
+
+            stage('Email Report') {
+                steps {
+                    emailext (
+                        subject: "Trivy Scan Report - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+    Trivy scan completed.
+
+    Image: ${env.FULL_IMAGE}
+
+    Check attached report.
+    """,
+                        to: "sumitjoshi1988@gmail.com",
+                        attachmentsPattern: "trivy-report.txt"
+                    )
+                }
             }
         }
     }
